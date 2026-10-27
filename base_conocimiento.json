@@ -1,5 +1,4 @@
 {
-  "descripcion": "KB medica para motor de inferencia (clausulas de Horn). Niveles: 1 hechos->signos, 2 signos->sindromes, 3 sindromes->enfermedades, 4+ subtipos/tratamientos/alertas. Uso academico, no sustituye criterio clinico.",
   "reglas": [
     {
       "id": "R01",
