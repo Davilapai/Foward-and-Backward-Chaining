@@ -1,5 +1,4 @@
 import json
-from collections import defaultdict
 
 # ==========================================================
 # PARTE 1: ESTRUCTURA DE DATOS (NO MODIFICAR)
@@ -18,36 +17,16 @@ class MotorInferencia:
         self.reglas = self.cargar_kb(ruta_kb)
         self.memoria_trabajo = set()
         self.traza_explicacion = [] # Sugerencia para almacenar el orden de las reglas activadas
+
     def cargar_kb(self, ruta):
-        """
-        Crea un mapa complejo donde:
-        Clave = consecuente
-        Valor = lista de diccionarios con toda la información de la regla
-        """
-        mapa_complejo = {}
+        """Carga las reglas desde un archivo JSON."""
         try:
             with open(ruta, 'r', encoding='utf-8') as f:
                 datos = json.load(f)
-                
-            for r in datos['reglas']:
-                consecuente = r['consecuente']
-                
-                # Si el consecuente no existe en el mapa, lo inicializamos
-                if consecuente not in mapa_complejo:
-                    mapa_complejo[consecuente] = []
-                    
-                # Guardamos toda la información anidada
-                mapa_complejo[consecuente].append({
-                    'id': r.get('id'),
-                    'antecedentes': r['antecedentes'],
-                    # Puedes agregar más campos aquí si tu JSON los tiene (ej. 'certeza', 'descripcion')
-                })
-                
-            return mapa_complejo
-            
+            return [Regla(r.get('id'), r['antecedentes'], r['consecuente']) for r in datos['reglas']]
         except Exception as e:
             print(f"Error al cargar la Base de Conocimiento: {e}")
-            return {}
+            return []
 
     # ==========================================================
     # PARTE 2: MOTORES DE INFERENCIA (A DESARROLLAR)
@@ -70,7 +49,6 @@ class MotorInferencia:
         Debe retornar True si el objetivo puede ser probado, False en caso contrario.
         Debe manejar adecuadamente la recursividad (goal-driven) y los casos base.
         """
-        
         
         # TODO: Implementar la lógica recursiva orientada a objetivos.
         
