@@ -49,10 +49,34 @@ class MotorInferencia:
         Debe retornar True si el objetivo puede ser probado, False en caso contrario.
         Debe manejar adecuadamente la recursividad (goal-driven) y los casos base.
         """
+        memoria = set(hechos_iniciales)
+        if objetivo in memoria:
+            return True
         
-        # TODO: Implementar la lógica recursiva orientada a objetivos.
-        
-        return False # Cambiar por el resultado lógico
+        historial = []
+        res = self.rec_inferencia_atras(memoria, objetivo, historial)
+        if res:
+            print("Puede ser demostrado!!")
+            print("Reglas utilizadas: ")
+            print(*[r.id_regla for r in historial], sep=', ')
+        else:
+            print("No puede ser demostrado")
+        return res
+
+    def rec_inferencia_atras(self, memoria, obj, historial):
+        if obj in memoria:
+            return True
+
+        reglas_utiles = [i for i in self.reglas if i.consecuente == obj]
+        for r in reglas_utiles:
+            for a in r.antecedentes:
+                if self.rec_inferencia_atras(memoria, a, historial):
+                    memoria.add(a) 
+                else:
+                    break
+            historial.append(r) 
+            return True
+        return False
 
 # ==========================================================
 # PARTE 3: EJECUCIÓN (PUEDEN MODIFICAR PARA PRUEBAS)
@@ -62,8 +86,8 @@ if __name__ == "__main__":
     motor = MotorInferencia("base_conocimiento.json")
 
     # 2. Definir caso clínico de prueba
-    sintomas = ["Fiebre", "Tos", "Dificultad_Respiratoria"]
-    hipotesis = "Neumonia"
+    sintomas = ["Fiebre", "Tos", "Dificultad_Respiratoria", "Congestion_Nasal", "Dolor_Garganta"]
+    hipotesis = "Sindrome_Respiratorio_Alto"
 
     print(f"--- Sistema Experto de Diagnóstico ---")
     print(f"Síntomas iniciales: {sintomas}")
