@@ -69,13 +69,16 @@ class MotorInferencia:
 
         reglas_utiles = [i for i in self.reglas if i.consecuente == obj]
         for r in reglas_utiles:
+            resultado = True
             for a in r.antecedentes:
                 if self.rec_inferencia_atras(memoria, a, historial):
                     memoria.add(a) 
                 else:
+                    resultado = False
                     break
-            historial.append(r) 
-            return True
+            if resultado:
+                historial.append(r) 
+                return True
         return False
 
 # ==========================================================
@@ -86,7 +89,7 @@ if __name__ == "__main__":
     motor = MotorInferencia("base_conocimiento.json")
 
     # 2. Definir caso clínico de prueba
-    sintomas = ["Fiebre", "Tos", "Dificultad_Respiratoria", "Congestion_Nasal", "Dolor_Garganta"]
+    sintomas = ["Fiebre", "Tos", "Dolor_Garganta","Congestion_Nasal"] 
     hipotesis = "Sindrome_Respiratorio_Alto"
 
     print(f"--- Sistema Experto de Diagnóstico ---")
