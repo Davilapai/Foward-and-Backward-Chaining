@@ -1,0 +1,692 @@
+{
+  "descripcion": "KB medica para motor de inferencia (clausulas de Horn). Niveles: 1 hechos->signos, 2 signos->sindromes, 3 sindromes->enfermedades, 4+ subtipos/tratamientos/alertas. Uso academico, no sustituye criterio clinico.",
+  "reglas": [
+    {
+      "id": "R01",
+      "rama": "Respiratoria",
+      "nivel": 1,
+      "antecedentes": [
+        "Fiebre",
+        "Tos"
+      ],
+      "consecuente": "Signo_Infeccion_Respiratoria"
+    },
+    {
+      "id": "R02",
+      "rama": "Respiratoria",
+      "nivel": 1,
+      "antecedentes": [
+        "Dolor_Garganta",
+        "Congestion_Nasal"
+      ],
+      "consecuente": "Signo_Compromiso_Via_Aerea_Alta"
+    },
+    {
+      "id": "R03",
+      "rama": "Respiratoria",
+      "nivel": 1,
+      "antecedentes": [
+        "Dificultad_Respiratoria",
+        "Silbido_Pecho"
+      ],
+      "consecuente": "Signo_Obstruccion_Bronquial"
+    },
+    {
+      "id": "R04",
+      "rama": "Respiratoria",
+      "nivel": 1,
+      "antecedentes": [
+        "Dificultad_Respiratoria",
+        "Saturacion_Baja"
+      ],
+      "consecuente": "Signo_Hipoxemia"
+    },
+    {
+      "id": "R05",
+      "rama": "Respiratoria",
+      "nivel": 1,
+      "antecedentes": [
+        "Fiebre",
+        "Escalofrios"
+      ],
+      "consecuente": "Signo_Respuesta_Febril"
+    },
+    {
+      "id": "R06",
+      "rama": "Respiratoria",
+      "nivel": 1,
+      "antecedentes": [
+        "Dolor_Muscular",
+        "Fatiga"
+      ],
+      "consecuente": "Signo_Malestar_General"
+    },
+    {
+      "id": "R07",
+      "rama": "Respiratoria",
+      "nivel": 1,
+      "antecedentes": [
+        "Tos",
+        "Esputo"
+      ],
+      "consecuente": "Signo_Secrecion_Bronquial"
+    },
+    {
+      "id": "R08",
+      "rama": "Respiratoria",
+      "nivel": 2,
+      "antecedentes": [
+        "Signo_Infeccion_Respiratoria",
+        "Signo_Compromiso_Via_Aerea_Alta"
+      ],
+      "consecuente": "Sindrome_Respiratorio_Alto"
+    },
+    {
+      "id": "R09",
+      "rama": "Respiratoria",
+      "nivel": 2,
+      "antecedentes": [
+        "Signo_Infeccion_Respiratoria",
+        "Signo_Secrecion_Bronquial"
+      ],
+      "consecuente": "Sindrome_Respiratorio_Bajo"
+    },
+    {
+      "id": "R10",
+      "rama": "Respiratoria",
+      "nivel": 2,
+      "antecedentes": [
+        "Signo_Obstruccion_Bronquial",
+        "Antecedente_Asma"
+      ],
+      "consecuente": "Sindrome_Broncoobstructivo_Asmatico"
+    },
+    {
+      "id": "R11",
+      "rama": "Respiratoria",
+      "nivel": 2,
+      "antecedentes": [
+        "Signo_Respuesta_Febril",
+        "Signo_Malestar_General"
+      ],
+      "consecuente": "Sindrome_Gripal"
+    },
+    {
+      "id": "R12",
+      "rama": "Respiratoria",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Gripal",
+        "Sindrome_Respiratorio_Alto",
+        "Inicio_Subito"
+      ],
+      "consecuente": "Influenza"
+    },
+    {
+      "id": "R13",
+      "rama": "Respiratoria",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Gripal",
+        "Sindrome_Respiratorio_Alto",
+        "Perdida_Olfato"
+      ],
+      "consecuente": "COVID19"
+    },
+    {
+      "id": "R14",
+      "rama": "Respiratoria",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Gripal",
+        "Sindrome_Respiratorio_Alto",
+        "Contacto_Caso_COVID"
+      ],
+      "consecuente": "COVID19"
+    },
+    {
+      "id": "R15",
+      "rama": "Respiratoria",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Respiratorio_Alto",
+        "Estornudos"
+      ],
+      "consecuente": "Resfriado_Comun"
+    },
+    {
+      "id": "R16",
+      "rama": "Respiratoria",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Respiratorio_Bajo",
+        "Dolor_Toracico"
+      ],
+      "consecuente": "Neumonia"
+    },
+    {
+      "id": "R17",
+      "rama": "Respiratoria",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Respiratorio_Bajo",
+        "Signo_Obstruccion_Bronquial"
+      ],
+      "consecuente": "Bronquitis_Aguda"
+    },
+    {
+      "id": "R18",
+      "rama": "Respiratoria",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Broncoobstructivo_Asmatico",
+        "Exposicion_Alergeno"
+      ],
+      "consecuente": "Crisis_Asmatica"
+    },
+    {
+      "id": "R19",
+      "rama": "Respiratoria",
+      "nivel": 4,
+      "antecedentes": [
+        "Neumonia",
+        "Signo_Hipoxemia"
+      ],
+      "consecuente": "Neumonia_Grave"
+    },
+    {
+      "id": "R20",
+      "rama": "Respiratoria",
+      "nivel": 4,
+      "antecedentes": [
+        "Neumonia",
+        "Esputo_Purulento"
+      ],
+      "consecuente": "Neumonia_Bacteriana_Probable"
+    },
+    {
+      "id": "R21",
+      "rama": "Respiratoria",
+      "nivel": 5,
+      "antecedentes": [
+        "Neumonia_Bacteriana_Probable"
+      ],
+      "consecuente": "Requiere_Valoracion_Antibiotica"
+    },
+    {
+      "id": "R22",
+      "rama": "Respiratoria",
+      "nivel": 5,
+      "antecedentes": [
+        "Neumonia_Grave",
+        "Cianosis"
+      ],
+      "consecuente": "Alerta_Falla_Respiratoria"
+    },
+    {
+      "id": "R23",
+      "rama": "Respiratoria",
+      "nivel": 4,
+      "antecedentes": [
+        "COVID19",
+        "Signo_Hipoxemia"
+      ],
+      "consecuente": "COVID19_Grave"
+    },
+    {
+      "id": "R24",
+      "rama": "Respiratoria",
+      "nivel": 5,
+      "antecedentes": [
+        "COVID19_Grave",
+        "Cianosis"
+      ],
+      "consecuente": "Alerta_Falla_Respiratoria"
+    },
+    {
+      "id": "R25",
+      "rama": "Respiratoria",
+      "nivel": 4,
+      "antecedentes": [
+        "COVID19"
+      ],
+      "consecuente": "Indicar_Aislamiento"
+    },
+    {
+      "id": "R26",
+      "rama": "Respiratoria",
+      "nivel": 4,
+      "antecedentes": [
+        "Influenza",
+        "Factor_Riesgo_Alto"
+      ],
+      "consecuente": "Considerar_Antiviral"
+    },
+    {
+      "id": "R27",
+      "rama": "Respiratoria",
+      "nivel": 4,
+      "antecedentes": [
+        "Crisis_Asmatica",
+        "Saturacion_Baja"
+      ],
+      "consecuente": "Alerta_Crisis_Asmatica_Severa"
+    },
+    {
+      "id": "R28",
+      "rama": "Respiratoria",
+      "nivel": 4,
+      "antecedentes": [
+        "Bronquitis_Aguda"
+      ],
+      "consecuente": "Manejo_Sintomatico_Ambulatorio"
+    },
+    {
+      "id": "R29",
+      "rama": "Respiratoria",
+      "nivel": 4,
+      "antecedentes": [
+        "Resfriado_Comun"
+      ],
+      "consecuente": "Manejo_Sintomatico_Ambulatorio"
+    },
+    {
+      "id": "R30",
+      "rama": "Gastrointestinal",
+      "nivel": 1,
+      "antecedentes": [
+        "Diarrea",
+        "Vomito"
+      ],
+      "consecuente": "Signo_Perdida_Liquidos_Digestiva"
+    },
+    {
+      "id": "R31",
+      "rama": "Gastrointestinal",
+      "nivel": 1,
+      "antecedentes": [
+        "Boca_Seca",
+        "Sed_Intensa"
+      ],
+      "consecuente": "Signo_Deshidratacion_Leve"
+    },
+    {
+      "id": "R32",
+      "rama": "Gastrointestinal",
+      "nivel": 1,
+      "antecedentes": [
+        "Piel_Pliegue_Lento",
+        "Ojos_Hundidos"
+      ],
+      "consecuente": "Signo_Deshidratacion_Moderada"
+    },
+    {
+      "id": "R33",
+      "rama": "Gastrointestinal",
+      "nivel": 1,
+      "antecedentes": [
+        "Dolor_Abdominal",
+        "Nauseas"
+      ],
+      "consecuente": "Signo_Irritacion_Digestiva"
+    },
+    {
+      "id": "R34",
+      "rama": "Gastrointestinal",
+      "nivel": 1,
+      "antecedentes": [
+        "Diarrea",
+        "Sangre_En_Heces"
+      ],
+      "consecuente": "Signo_Diarrea_Invasiva"
+    },
+    {
+      "id": "R35",
+      "rama": "Gastrointestinal",
+      "nivel": 1,
+      "antecedentes": [
+        "Dolor_Fosa_Iliaca_Derecha",
+        "Rebote_Positivo"
+      ],
+      "consecuente": "Signo_Irritacion_Peritoneal"
+    },
+    {
+      "id": "R36",
+      "rama": "Gastrointestinal",
+      "nivel": 2,
+      "antecedentes": [
+        "Signo_Perdida_Liquidos_Digestiva",
+        "Signo_Irritacion_Digestiva"
+      ],
+      "consecuente": "Sindrome_Gastroenteritis_Aguda"
+    },
+    {
+      "id": "R37",
+      "rama": "Gastrointestinal",
+      "nivel": 2,
+      "antecedentes": [
+        "Signo_Diarrea_Invasiva",
+        "Fiebre"
+      ],
+      "consecuente": "Sindrome_Disenterico"
+    },
+    {
+      "id": "R38",
+      "rama": "Gastrointestinal",
+      "nivel": 2,
+      "antecedentes": [
+        "Signo_Irritacion_Peritoneal",
+        "Fiebre"
+      ],
+      "consecuente": "Sindrome_Abdomen_Agudo"
+    },
+    {
+      "id": "R39",
+      "rama": "Gastrointestinal",
+      "nivel": 2,
+      "antecedentes": [
+        "Signo_Deshidratacion_Leve",
+        "Signo_Perdida_Liquidos_Digestiva"
+      ],
+      "consecuente": "Sindrome_Deshidratacion_Leve"
+    },
+    {
+      "id": "R40",
+      "rama": "Gastrointestinal",
+      "nivel": 2,
+      "antecedentes": [
+        "Signo_Deshidratacion_Moderada",
+        "Signo_Perdida_Liquidos_Digestiva"
+      ],
+      "consecuente": "Sindrome_Deshidratacion_Moderada"
+    },
+    {
+      "id": "R41",
+      "rama": "Gastrointestinal",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Gastroenteritis_Aguda",
+        "Consumo_Alimento_Sospechoso"
+      ],
+      "consecuente": "Intoxicacion_Alimentaria"
+    },
+    {
+      "id": "R42",
+      "rama": "Gastrointestinal",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Gastroenteritis_Aguda",
+        "Agua_No_Potable"
+      ],
+      "consecuente": "Gastroenteritis_Infecciosa"
+    },
+    {
+      "id": "R43",
+      "rama": "Gastrointestinal",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Disenterico",
+        "Viaje_Reciente"
+      ],
+      "consecuente": "Disenteria_Bacteriana_Probable"
+    },
+    {
+      "id": "R44",
+      "rama": "Gastrointestinal",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Abdomen_Agudo",
+        "Migracion_Dolor_Periumbilical"
+      ],
+      "consecuente": "Apendicitis_Aguda"
+    },
+    {
+      "id": "R45",
+      "rama": "Gastrointestinal",
+      "nivel": 4,
+      "antecedentes": [
+        "Gastroenteritis_Infecciosa",
+        "Sindrome_Deshidratacion_Leve"
+      ],
+      "consecuente": "Indicar_Rehidratacion_Oral"
+    },
+    {
+      "id": "R46",
+      "rama": "Gastrointestinal",
+      "nivel": 4,
+      "antecedentes": [
+        "Intoxicacion_Alimentaria",
+        "Sindrome_Deshidratacion_Leve"
+      ],
+      "consecuente": "Indicar_Rehidratacion_Oral"
+    },
+    {
+      "id": "R47",
+      "rama": "Gastrointestinal",
+      "nivel": 4,
+      "antecedentes": [
+        "Gastroenteritis_Infecciosa",
+        "Sindrome_Deshidratacion_Moderada"
+      ],
+      "consecuente": "Requiere_Rehidratacion_Intravenosa"
+    },
+    {
+      "id": "R48",
+      "rama": "Gastrointestinal",
+      "nivel": 4,
+      "antecedentes": [
+        "Intoxicacion_Alimentaria",
+        "Sindrome_Deshidratacion_Moderada"
+      ],
+      "consecuente": "Requiere_Rehidratacion_Intravenosa"
+    },
+    {
+      "id": "R49",
+      "rama": "Gastrointestinal",
+      "nivel": 5,
+      "antecedentes": [
+        "Requiere_Rehidratacion_Intravenosa",
+        "Letargia"
+      ],
+      "consecuente": "Alerta_Deshidratacion_Severa"
+    },
+    {
+      "id": "R50",
+      "rama": "Gastrointestinal",
+      "nivel": 4,
+      "antecedentes": [
+        "Apendicitis_Aguda"
+      ],
+      "consecuente": "Indicar_Valoracion_Quirurgica"
+    },
+    {
+      "id": "R51",
+      "rama": "Gastrointestinal",
+      "nivel": 4,
+      "antecedentes": [
+        "Apendicitis_Aguda",
+        "Rigidez_Abdominal"
+      ],
+      "consecuente": "Alerta_Posible_Peritonitis"
+    },
+    {
+      "id": "R52",
+      "rama": "Gastrointestinal",
+      "nivel": 4,
+      "antecedentes": [
+        "Disenteria_Bacteriana_Probable"
+      ],
+      "consecuente": "Indicar_Coprocultivo"
+    },
+    {
+      "id": "R53",
+      "rama": "Arbovirosis",
+      "nivel": 1,
+      "antecedentes": [
+        "Fiebre_Alta",
+        "Dolor_Cabeza"
+      ],
+      "consecuente": "Signo_Fiebre_Con_Cefalea"
+    },
+    {
+      "id": "R54",
+      "rama": "Arbovirosis",
+      "nivel": 1,
+      "antecedentes": [
+        "Dolor_Muscular",
+        "Dolor_Articular"
+      ],
+      "consecuente": "Signo_Mialgia_Artralgia_Arboviral"
+    },
+    {
+      "id": "R55",
+      "rama": "Arbovirosis",
+      "nivel": 1,
+      "antecedentes": [
+        "Erupcion_Cutanea",
+        "Fiebre"
+      ],
+      "consecuente": "Signo_Exantema_Febril"
+    },
+    {
+      "id": "R56",
+      "rama": "Arbovirosis",
+      "nivel": 1,
+      "antecedentes": [
+        "Residencia_Zona_Endemica",
+        "Picadura_Mosquito"
+      ],
+      "consecuente": "Signo_Exposicion_Vectorial"
+    },
+    {
+      "id": "R57",
+      "rama": "Arbovirosis",
+      "nivel": 1,
+      "antecedentes": [
+        "Plaquetas_Bajas",
+        "Sangrado_Mucosas"
+      ],
+      "consecuente": "Signo_Compromiso_Hemostasia"
+    },
+    {
+      "id": "R58",
+      "rama": "Arbovirosis",
+      "nivel": 1,
+      "antecedentes": [
+        "Hipotension",
+        "Pulso_Debil"
+      ],
+      "consecuente": "Signo_Inestabilidad_Hemodinamica"
+    },
+    {
+      "id": "R59",
+      "rama": "Arbovirosis",
+      "nivel": 2,
+      "antecedentes": [
+        "Signo_Fiebre_Con_Cefalea",
+        "Signo_Mialgia_Artralgia_Arboviral",
+        "Signo_Exposicion_Vectorial"
+      ],
+      "consecuente": "Sindrome_Febril_Arboviral"
+    },
+    {
+      "id": "R60",
+      "rama": "Arbovirosis",
+      "nivel": 2,
+      "antecedentes": [
+        "Signo_Exantema_Febril",
+        "Signo_Mialgia_Artralgia_Arboviral",
+        "Signo_Exposicion_Vectorial"
+      ],
+      "consecuente": "Sindrome_Exantematico_Arboviral"
+    },
+    {
+      "id": "R61",
+      "rama": "Arbovirosis",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Febril_Arboviral",
+        "Dolor_Retroocular"
+      ],
+      "consecuente": "Dengue"
+    },
+    {
+      "id": "R62",
+      "rama": "Arbovirosis",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Exantematico_Arboviral",
+        "Artralgia_Incapacitante"
+      ],
+      "consecuente": "Chikungunya"
+    },
+    {
+      "id": "R63",
+      "rama": "Arbovirosis",
+      "nivel": 3,
+      "antecedentes": [
+        "Sindrome_Exantematico_Arboviral",
+        "Conjuntivitis_No_Purulenta"
+      ],
+      "consecuente": "Zika"
+    },
+    {
+      "id": "R64",
+      "rama": "Arbovirosis",
+      "nivel": 4,
+      "antecedentes": [
+        "Dengue",
+        "Signo_Compromiso_Hemostasia"
+      ],
+      "consecuente": "Dengue_Con_Signos_Alarma"
+    },
+    {
+      "id": "R65",
+      "rama": "Arbovirosis",
+      "nivel": 4,
+      "antecedentes": [
+        "Dengue",
+        "Vomito_Persistente"
+      ],
+      "consecuente": "Dengue_Con_Signos_Alarma"
+    },
+    {
+      "id": "R66",
+      "rama": "Arbovirosis",
+      "nivel": 5,
+      "antecedentes": [
+        "Dengue_Con_Signos_Alarma",
+        "Signo_Inestabilidad_Hemodinamica"
+      ],
+      "consecuente": "Alerta_Dengue_Grave_Choque"
+    },
+    {
+      "id": "R67",
+      "rama": "Arbovirosis",
+      "nivel": 4,
+      "antecedentes": [
+        "Dengue"
+      ],
+      "consecuente": "Evitar_AINEs_Y_Aspirina"
+    },
+    {
+      "id": "R68",
+      "rama": "Arbovirosis",
+      "nivel": 4,
+      "antecedentes": [
+        "Chikungunya"
+      ],
+      "consecuente": "Evitar_AINEs_Y_Aspirina"
+    },
+    {
+      "id": "R69",
+      "rama": "Arbovirosis",
+      "nivel": 4,
+      "antecedentes": [
+        "Zika",
+        "Embarazo"
+      ],
+      "consecuente": "Alerta_Zika_Gestante"
+    }
+  ]
+}
