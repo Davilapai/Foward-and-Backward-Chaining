@@ -16,7 +16,6 @@ class MotorInferencia:
     def __init__(self, ruta_kb):
         self.reglas = self.cargar_kb(ruta_kb)
         self.memoria_trabajo = set()
-        self.traza_explicacion = []
 
     def cargar_kb(self, ruta):
         """Carga las reglas desde un archivo JSON."""
@@ -36,7 +35,7 @@ class MotorInferencia:
         Motor de Encadenamiento hacia Adelante (Forward Chaining).
         """
         self.memoria_trabajo = set(hechos_iniciales)
-        self.traza_explicacion = []  
+        traza_explicacion = []  
 
         if objetivo in self.memoria_trabajo:
             return True
@@ -48,39 +47,15 @@ class MotorInferencia:
                 if (regla.consecuente not in self.memoria_trabajo
                         and regla.antecedentes <= self.memoria_trabajo):
                     self.memoria_trabajo.add(regla.consecuente)
-                    self.traza_explicacion.append({
-                        "paso": len(self.traza_explicacion) + 1,
-                        "id": regla.id_regla,
-                        "antecedentes": sorted(regla.antecedentes),
-                        "consecuente": regla.consecuente,
-                    })
+                    traza_explicacion.append(regla)
                     hubo_cambios = True
                     if objetivo in self.memoria_trabajo:
+                        print("Es concecuencia logica!!")
+                        print("Reglas utilizadas: ")
+                        print(*[r.id_regla for r in traza_explicacion], sep=', ')
                         return True
+        print("No es concecuencia logica...")
         return False
-
-    def traza_a_texto(self):
-        """Devuelve la traza como texto legible, un disparo por línea."""
-        if not self.traza_explicacion:
-            return "(No se disparó ninguna regla)"
-        lineas = []
-        for t in self.traza_explicacion:
-            ants = " AND ".join(t["antecedentes"])
-            lineas.append(f"Paso {t['paso']:>2} | {t['id']}: {ants} -> {t['consecuente']}")
-        return "\n".join(lineas)
-
-    def imprimir_traza(self):
-        """Imprime la traza de la última inferencia hacia adelante."""
-        print("Traza de explicación (orden cronológico):")
-        print(self.traza_a_texto())
-
-    def exportar_traza(self, ruta):
-        """Exporta la traza a un archivo TXT o JSON."""
-        with open(ruta, "w", encoding="utf-8") as f:
-            if ruta.lower().endswith(".json"):
-                json.dump(self.traza_explicacion, f, ensure_ascii=False, indent=2)
-            else:
-                f.write(self.traza_a_texto() + "\n")
 
     def ejecutar_inferencia_atras(self, hechos_iniciales, objetivo):
         """
@@ -158,15 +133,8 @@ if __name__ == "__main__":
         print("--- Motor Hacia Adelante ---")
         resultado_adelante = motor.ejecutar_inferencia(caso['sintomas'], caso['objetivo'])
         print(f"¿Es consecuencia lógica?: {resultado_adelante}")
-        motor.imprimir_traza()
-        
-        # Exportar traza sincronizada con el número de caso
-        nombre_archivo = f"traza_caso_{i}.txt"
-        motor.exportar_traza(nombre_archivo)
-        print(f"-> Traza exportada en: {nombre_archivo}")
         
         # Motor hacia atrás
         print("\n--- Motor Hacia Atrás ---")
         resultado_atras = motor.ejecutar_inferencia_atras(caso['sintomas'], caso['objetivo'])
         print(f"¿Es demostrable?: {resultado_atras}")
-        print()
