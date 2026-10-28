@@ -1,0 +1,166 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{ragged2e}
+\usepackage{hyperref}
+
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegray},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{red},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Proyecto 2: Motores de Inferencia Simbólica}
+\lhead{Inteligencia Artificial -- Javeriana}
+\rfoot{Página \thepage}
+
+\begin{document}
+
+\centering
+
+% Baja la universidad un poco para que no quede pegada al encabezado
+\vspace*{1.5cm}
+
+% Bloque Superior: Institución
+{\LARGE \textbf{Pontificia Universidad Javeriana}}\\[0.4cm]
+{\large Facultad de Ingeniería -- Carrera de Ciencia de Datos}\\[0.3cm]
+{\normalsize Introducción a la Inteligencia Artificial}
+
+\vspace{0.8cm}
+
+\vfill 
+
+% Bloque Central: Título con interlineado controlado
+{
+    \huge \bfseries
+    \begin{tabular}{c}
+        Informe Técnico: Motor de Inferencia de \\
+        Propósito General basado en Cláusulas de Horn
+    \end{tabular}
+}\\[0.8cm]
+{\large \textit{Encadenamiento hacia Adelante y hacia Atrás en Dominios Médicos}}\\[1cm]
+\textbf{Autores:}\\
+María José Zabala Acero\\
+Juan Andrés Bravo\\
+David Alejandro Davila\\
+Arturo Manrique\\[0.4cm]
+
+
+\vfill 
+
+% Bloque Inferior: Autores, Departamento y Fecha
+
+\textit{Departamento de Ingeniería de Sistemas}\\[0.8cm]
+Julio Omar Palacio Nino\\[2cm]
+\textbf{29 de octubre de 2026}
+
+
+\newpage
+
+
+
+% --- A PARTIR DE AQUÍ EMPIEZA LA PÁGINA 2 ---
+\justifying
+\begin{abstract}
+Este documento presenta el diseño, modelado e implementación de un motor de inferencia simbólica basado en lógica proposicional y cláusulas de Horn para un dominio médico complejo. Se detallan las estrategias algorítmicas de encadenamiento hacia adelante (\textit{forward chaining}) y hacia atrás (\textit{backward chaining}), garantizando una profundidad lógica de al menos cuatro niveles. Asimismo, se valida el funcionamiento del sistema mediante tres casos clínicos experimentales, demostrando la trazabilidad paso a paso en la deducción de diagnósticos y estados de alerta.
+\end{abstract}
+
+\vspace{0.5cm}
+
+\section{Introducción y Definición del Problema}
+El estudio de la inteligencia artificial clásica requiere la construcción de sistemas expertos capaces de resolver el problema de la consecuencia lógica $KB \models \alpha$, donde $KB$ representa la Base de Conocimiento estructurada en reglas de Horn de la forma $(P_1 \wedge P_2 \wedge \dots \wedge P_n \rightarrow Q)$, $\Delta$ denota el conjunto inicial de síntomas observados (hechos), y $\alpha$ es el diagnóstico u objetivo a verificar. 
+
+Para cumplir con los requerimientos del proyecto, se ha desarrollado una base modular externa en formato JSON que contiene más de 50 reglas lógicas, estructuradas de lo general a lo particular a través de cuatro niveles de abstracción:
+\begin{enumerate}
+    \item \textbf{Nivel 1:} Hechos hacia Signos.
+    \item \textbf{Nivel 2:} Signos hacia Síndromes.
+    \item \textbf{Nivel 3:} Síndromes hacia Enfermedades.
+    \item \textbf{Nivel 4:} Enfermedades y síntomas críticos hacia Subtipos, Tratamientos o Estados de Alerta.
+\end{enumerate}
+\section{Estrategias Algorítmicas Utilizadas}
+
+\subsection{Motor de Inferencia hacia Adelante (Forward Chaining)}
+
+
+\begin{itemize}
+    \item \textbf{Funcionamiento:} 
+    \item \textbf{Condición de Parada:}
+    \item \textbf{Trazabilidad:} 
+\end{itemize}
+
+\subsection{Motor de Inferencia hacia Atrás (Backward Chaining)}
+
+
+\begin{itemize}
+    \item \textbf{Funcionamiento:} .
+    \item \textbf{Casos Base y Control de Profundidad:} 
+\end{itemize}
+
+\section{Casos Clínicos de Prueba y Trazabilidad}
+
+\subsection{Caso Clínico 1: }
+\begin{itemize}
+    \item \textbf{Síntomas Iniciales ($\Delta$):} \{\}
+    \item \textbf{Diagnóstico Objetivo ($\alpha$):} N
+    \item \textbf{Trazabilidad Paso a Paso (Hacia Adelante):}
+    \begin{enumerate}
+        \item \textit{Ciclo 1:} Se detectan Fiebre alta y Tos seca $\rightarrow$ Se infiere el signo intermedio \textit{Sind\_Respiratorio\_Leve}.
+        \item \textit{Ciclo 2:} Con el síndrome anterior y Congestión nasal $\rightarrow$ Se infiere el síndrome \item \textit{Infeccion\_Vias\_Altas}.
+        \item \textit{Ciclo 3:} Al incorporar Fatiga y persistencia de fiebre $\rightarrow$ Se deduce la enfermedad \textit{Neumonia\_Atipica} (Nivel 3).
+        \item \textit{Ciclo 4:} Evaluando el diagnóstico con el síntoma crítico asociado $\rightarrow$ Se concluye el estado final \textit{Alerta\_Leve\_Monitoreo}. \textbf{¡Objetivo $\alpha$ alcanzado con éxito!}
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Caso Clínico 2:}
+\begin{itemize}
+    \item \textbf{Síntomas Iniciales ($\Delta$):} \{ hola \}
+    \item \textbf{Diagnóstico Objetivo ($\alpha$):} 
+    \item \textbf{Trazabilidad Paso a Paso:}
+    \begin{enumerate}
+        \item Se activa la rama general de cefaleas a partir de Cefalea intensa y Náuseas.
+        \item El motor evalúa las bifurcaciones que comparten antecedentes similares y detecta el hecho diferenciador: \textit{Sensibilidad a la luz (Fotofobia)}.
+        \item Gracias a este hecho diferenciador, el encadenamiento desvía la inferencia hacia la regla específica de \textit{Migraña con Aura}, descartando cuadros tensionales genéricos y alcanzando el nivel 3 de profundidad.
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Caso Clínico 3:}
+\begin{itemize}
+    \item \textbf{Síntomas Iniciales ($\Delta$):} \{\}
+    \item \textbf{Diagnóstico Objetivo ($\alpha$):} 
+    \item \textbf{Trazabilidad Paso a Paso (Hacia Atrás):}
+    \begin{enumerate}
+        \item El motor parte del objetivo $\alpha$: \textit{Codigo\_Rojo\_Urgencias}.
+        \item Se evalúan los antecedentes requeridos: se necesita comprobar la existencia previa del síndrome \textit{Falla\_Cardiovascular} y el síntoma crítico \textit{Sudoración fría}.
+        \item Al verificar hacia atrás, \textit{Falla\_Cardiovascular} se desglosa en \textit{Dolor torácico opresivo} y \textit{Dificultad respiratoria severa}, los cuales se encuentran en $\Delta$.
+        \item Se valida la conjunción lógica, cerrando con éxito la prueba de consecuencia lógica por encadenamiento hacia atrás y generando la traza de auditoría clínica.
+    \end{enumerate}
+\end{itemize}
+
+\section{Conclusiones}
+
+\end{document}
