@@ -97,7 +97,28 @@ for f in sorted(finales):
     if dmin[f] < 4: 
         errores.append(f"Final '{f}' con profundidad minima {dmin[f]} (<4)")
 
+niveles_declarados = {r["nivel"] for r in reglas}
+for r in reglas:
+    nivel_calculado = dmin.get(r["consecuente"])
+    if nivel_calculado is not None and r["nivel"] != nivel_calculado:
+        errores.append(
+            f"{r['id']}: nivel declarado {r['nivel']} "
+            f"pero nivel calculado {nivel_calculado}"
+        )
+
+niveles_logicos = sorted({0, *dmin.values()})
+total_niveles = max(niveles_logicos, default=0)
+if niveles_declarados != set(range(1, total_niveles + 1)):
+    errores.append(
+        "Niveles declarados inconsistentes: "
+        f"{sorted(niveles_declarados)} (esperados del 1 al {total_niveles})"
+    )
+
 print(f"Reglas: {len(reglas)} | Hechos base: {len(base)} | Intermedios: {len(consecuentes & antecedentes)} | Finales: {len(finales)}")
+print(
+    f"Niveles lógicos de reglas: {total_niveles} "
+    f"(reglas del 1 al {total_niveles}; hechos base en nivel 0)"
+)
 print("Profundidad de finales (min/max):")
 
 for f in sorted(finales): 
