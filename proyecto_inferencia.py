@@ -118,6 +118,11 @@ if __name__ == "__main__":
             "nombre": "Caso Clínico 4: Alerta de Falla Respiratoria Extrema (Nivel 5)",
             "sintomas": ["Fiebre", "Tos", "Esputo", "Dolor_Toracico", "Dificultad_Respiratoria", "Saturacion_Baja", "Cianosis"],
             "objetivo": "Alerta_Falla_Respiratoria"
+        },
+        {
+            "nombre": "Caso Clínico 5:  Fallo en detectar Alerta de Falla Respiratoria Extrema (Nivel 5)",
+            "sintomas": ["Fiebre", "Tos", "Dolor_Toracico", "Dificultad_Respiratoria", "Saturacion_Baja", "Cianosis"],
+            "objetivo": "Alerta_Falla_Respiratoria"
         }
     ]
 
