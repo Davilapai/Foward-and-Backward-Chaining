@@ -60,7 +60,7 @@
     \huge \bfseries
     \begin{tabular}{c}
         Informe Técnico: Motor de Inferencia de \\
-        Propósito General basado en Cláusulas de Horn
+        Propósito General basado en Cláusulas \\ de Horn
     \end{tabular}
 }\\[0.8cm]
 {\large \textit{Encadenamiento hacia Adelante y hacia Atrás en Dominios Médicos}}\\[1cm]
@@ -100,67 +100,98 @@ Para cumplir con los requerimientos del proyecto, se ha desarrollado una base mo
     \item \textbf{Nivel 1:} Hechos hacia Signos.
     \item \textbf{Nivel 2:} Signos hacia Síndromes.
     \item \textbf{Nivel 3:} Síndromes hacia Enfermedades.
-    \item \textbf{Nivel 4:} Enfermedades y síntomas críticos hacia Subtipos, Tratamientos o Estados de Alerta.
+    \item \textbf{Nivel 4:} Enfermedades y síntomas críticos hacia Subtipos y Tratamientos.
+    \item \textbf{Nivel 5:} Estados de Alerta hacia Diagnósticos Críticos y Recomendaciones de Intervención.
 \end{enumerate}
 \section{Estrategias Algorítmicas Utilizadas}
 
+El núcleo del sistema experto se compone de dos motores de inferencia simbólica implementados en Python, los cuales operan sobre la base de conocimiento estructurada en cláusulas de Horn.
+
 \subsection{Motor de Inferencia hacia Adelante (Forward Chaining)}
-
-
+El encadenamiento hacia adelante es una estrategia de razonamiento guiada por los datos (\textit{data-driven}). 
 \begin{itemize}
-    \item \textbf{Funcionamiento:} 
-    \item \textbf{Condición de Parada:}
-    \item \textbf{Trazabilidad:} 
+    \item \textbf{Funcionamiento:} El algoritmo inicializa la memoria de trabajo con el conjunto de síntomas iniciales ($\Delta$). Utiliza un enfoque de punto fijo iterativo donde recorre de forma secuencial las reglas de la base de conocimiento. Una regla se dispara únicamente si el consecuente aún no se encuentra en la memoria de trabajo y la totalidad de sus antecedentes forman un subconjunto estricto o igual a la memoria actual ($\text{regla.antecedentes} \subseteq \text{memoria\_trabajo}$).
+    \item \textbf{Condición de Parada:} El proceso de inferencia termina bajo dos criterios de salida: (a) cuando el diagnóstico objetivo ($\alpha$) es alcanzado e incorporado a la memoria de trabajo (retornando exitosamente \texttt{True}), o (b) cuando se alcanza un punto fijo iterativo donde una pasada completa por la base de conocimiento no genera nuevos hechos (retornando \texttt{False}).
+    \item \textbf{Trazabilidad:} Cada vez que una regla se dispara, el sistema registra cronológicamente en una lista de diccionarios el número de paso, el identificador de la regla, los antecedentes evaluados y el consecuente derivado, permitiendo exportar posteriormente una traza detallada de la auditoría clínica.
 \end{itemize}
 
 \subsection{Motor de Inferencia hacia Atrás (Backward Chaining)}
-
-
+El encadenamiento hacia atrás opera bajo un enfoque guiado por los objetivos (\textit{goal-driven}).
 \begin{itemize}
-    \item \textbf{Funcionamiento:} .
-    \item \textbf{Casos Base y Control de Profundidad:} 
+    \item \textbf{Funcionamiento:} El algoritmo parte directamente de la hipótesis o diagnóstico objetivo ($\alpha$) y evalúa recursivamente si puede ser demostrado a partir de los hechos iniciales. Para ello, identifica el conjunto de reglas útiles cuyos consecuentes coinciden con el objetivo actual y descompone la meta probando de manera recursiva cada uno de sus antecedentes como sub-objetivos independientes.
+    \item \textbf{Casos Base y Control de Profundidad:} Como mecanismo de control robusto, el algoritmo evalúa un caso base inicial verificando si el objetivo ya pertenece al conjunto de hechos de la memoria. Si la validación recursiva de los antecedentes es exitosa, la regla evaluada se almacena en un historial cronológico de trazabilidad, permitiendo confirmar la demostrabilidad lógica de la hipótesis médica planteada.
 \end{itemize}
 
-\section{Casos Clínicos de Prueba y Trazabilidad}
+\section{Casos Clínicos y Validación del Sistema Experto}
 
-\subsection{Caso Clínico 1: }
+Para validar el correcto funcionamiento de los motores de inferencia (tanto en encadenamiento hacia adelante como hacia atrás), se diseñaron y evaluaron cuatro casos clínicos con diferentes niveles de complejidad y profundidad lógica, superando el mínimo requerido de cuatro niveles de abstracción.
+
+\subsection{Caso Clínico 1: Síndrome Respiratorio Alto (Nivel 2)}
 \begin{itemize}
-    \item \textbf{Síntomas Iniciales ($\Delta$):} \{\}
-    \item \textbf{Diagnóstico Objetivo ($\alpha$):} N
-    \item \textbf{Trazabilidad Paso a Paso (Hacia Adelante):}
+    \item \textbf{Síntomas Iniciales ($\Delta$):} \texttt{['Fiebre', 'Tos', 'Dolor\_Garganta', 'Congestion\_Nasal']}
+    \item \textbf{Diagnóstico Objetivo ($\alpha$):} \texttt{Sindrome\_Respiratorio\_Alto}
+    \item \textbf{Encadenamiento hacia Adelante:} Consecuencia lógica verificada con éxito (\texttt{True}).
     \begin{enumerate}
-        \item \textit{Ciclo 1:} Se detectan Fiebre alta y Tos seca $\rightarrow$ Se infiere el signo intermedio \textit{Sind\_Respiratorio\_Leve}.
-        \item \textit{Ciclo 2:} Con el síndrome anterior y Congestión nasal $\rightarrow$ Se infiere el síndrome \item \textit{Infeccion\_Vias\_Altas}.
-        \item \textit{Ciclo 3:} Al incorporar Fatiga y persistencia de fiebre $\rightarrow$ Se deduce la enfermedad \textit{Neumonia\_Atipica} (Nivel 3).
-        \item \textit{Ciclo 4:} Evaluando el diagnóstico con el síntoma crítico asociado $\rightarrow$ Se concluye el estado final \textit{Alerta\_Leve\_Monitoreo}. \textbf{¡Objetivo $\alpha$ alcanzado con éxito!}
+        \item \textit{Paso 1 (Regla R01):} \texttt{Fiebre} + \texttt{Tos} $\rightarrow$ \texttt{Signo\_Infeccion\_Respiratoria}
+        \item \textit{Paso 2 (Regla R02):} \texttt{Congestion\_Nasal} + \texttt{Dolor\_Garganta} $\rightarrow$ \\ \texttt{Signo\_Compromiso\_Via\_Aerea\_Alta}
+        \item \textit{Paso 3 (Regla R08):} \texttt{Signo\_Compromiso\_Via\_Aerea\_Alta} + \texttt{Signo\_Infeccion\_\\  Respiratoria} $\rightarrow$ \textbf{\texttt{Sindrome\_Respiratorio\_Alto}}
     \end{enumerate}
+    \item \textbf{Encadenamiento hacia Atrás:} Demostrable con éxito (\texttt{True}). Reglas utilizadas: \texttt{R02, R01, R08}.
 \end{itemize}
 
-\subsection{Caso Clínico 2:}
+\subsection{Caso Clínico 2: Neumonía (Nivel 3)}
 \begin{itemize}
-    \item \textbf{Síntomas Iniciales ($\Delta$):} \{ hola \}
-    \item \textbf{Diagnóstico Objetivo ($\alpha$):} 
-    \item \textbf{Trazabilidad Paso a Paso:}
+    \item \textbf{Síntomas Iniciales ($\Delta$):} \texttt{['Fiebre', 'Tos', 'Esputo', 'Dolor\_Toracico']}
+    \item \textbf{Diagnóstico Objetivo ($\alpha$):} \texttt{Neumonia}
+    \item \textbf{Encadenamiento hacia Adelante:} Consecuencia lógica verificada con éxito (\texttt{True}).
     \begin{enumerate}
-        \item Se activa la rama general de cefaleas a partir de Cefalea intensa y Náuseas.
-        \item El motor evalúa las bifurcaciones que comparten antecedentes similares y detecta el hecho diferenciador: \textit{Sensibilidad a la luz (Fotofobia)}.
-        \item Gracias a este hecho diferenciador, el encadenamiento desvía la inferencia hacia la regla específica de \textit{Migraña con Aura}, descartando cuadros tensionales genéricos y alcanzando el nivel 3 de profundidad.
+        \item \textit{Paso 1 (Regla R01):} \texttt{Fiebre} + \texttt{Tos} $\rightarrow$ \texttt{Signo\_Infeccion\_Respiratoria}
+        \item \textit{Paso 2 (Regla R07):} \texttt{Esputo} + \texttt{Tos} $\rightarrow$ \texttt{Signo\_Secrecion\_Bronquial}
+        \item \textit{Paso 3 (Regla R09):} \texttt{Signo\_Infeccion\_Respiratoria} + \texttt{Signo\_Secrecion\_Bronquial} $\rightarrow$ \texttt{Sindrome\_Respiratorio\_Bajo}
+        \item \textit{Paso 4 (Regla R16):} \texttt{Dolor\_Toracico} + \texttt{Sindrome\_Respiratorio\_Bajo} $\rightarrow$ \textbf{\texttt{Neumonia}}
     \end{enumerate}
+    \item \textbf{Encadenamiento hacia Atrás:} Demostrable con éxito (\texttt{True}). Reglas utilizadas: \texttt{R07, R01, R09, R16}.
 \end{itemize}
 
-\subsection{Caso Clínico 3:}
+\subsection{Caso Clínico 3: Neumonía Grave (Nivel 4)}
 \begin{itemize}
-    \item \textbf{Síntomas Iniciales ($\Delta$):} \{\}
-    \item \textbf{Diagnóstico Objetivo ($\alpha$):} 
-    \item \textbf{Trazabilidad Paso a Paso (Hacia Atrás):}
+    \item \textbf{Síntomas Iniciales ($\Delta$):} \texttt{['Fiebre', 'Tos', 'Esputo', 'Dolor\_Toracico',\\ 'Dificultad\_Respiratoria', 'Saturacion\_Baja']}
+    \item \textbf{Diagnóstico Objetivo ($\alpha$):} \texttt{Neumonia\_Grave}
+    \item \textbf{Encadenamiento hacia Adelante:} Consecuencia lógica verificada con éxito (\texttt{True}).
     \begin{enumerate}
-        \item El motor parte del objetivo $\alpha$: \textit{Codigo\_Rojo\_Urgencias}.
-        \item Se evalúan los antecedentes requeridos: se necesita comprobar la existencia previa del síndrome \textit{Falla\_Cardiovascular} y el síntoma crítico \textit{Sudoración fría}.
-        \item Al verificar hacia atrás, \textit{Falla\_Cardiovascular} se desglosa en \textit{Dolor torácico opresivo} y \textit{Dificultad respiratoria severa}, los cuales se encuentran en $\Delta$.
-        \item Se valida la conjunción lógica, cerrando con éxito la prueba de consecuencia lógica por encadenamiento hacia atrás y generando la traza de auditoría clínica.
+        \item \textit{Paso 1 (Regla R01):} \texttt{Fiebre} + \texttt{Tos} $\rightarrow$ \texttt{Signo\_Infeccion\_Respiratoria}
+        \item \textit{Paso 2 (Regla R04):} \texttt{Dificultad\_Respiratoria} + \texttt{Saturacion\_Baja} $\rightarrow$ \texttt{Signo\_Hipoxemia}
+        \item \textit{Paso 3 (Regla R07):} \texttt{Esputo} + \texttt{Tos} $\rightarrow$ \texttt{Signo\_Secrecion\_Bronquial}
+        \item \textit{Paso 4 (Regla R09):} \texttt{Signo\_Infeccion\_Respiratoria} + \texttt{Signo\_Secrecion\_Bronquial} $\rightarrow$ \texttt{Sindrome\_Respiratorio\_Bajo}
+        \item \textit{Paso 5 (Regla R16):} \texttt{Dolor\_Toracico} + \texttt{Sindrome\_Respiratorio\_Bajo} $\rightarrow$ \texttt{Neumonia}
+        \item \textit{Paso 6 (Regla R19):} \texttt{Neumonia} + \texttt{Signo\_Hipoxemia} $\rightarrow$ \textbf{\texttt{Neumonia\_Grave}}
     \end{enumerate}
+    \item \textbf{Encadenamiento hacia Atrás:} Demostrable con éxito (\texttt{True}). Reglas utilizadas: \texttt{R07, R01, R09, R16, R04, R19}.
+\end{itemize}
+
+\subsection{Caso Clínico 4: Alerta de Falla Respiratoria Extrema (Nivel 5)}
+\begin{itemize}
+    \item \textbf{Síntomas Iniciales ($\Delta$):} \texttt{['Fiebre', 'Tos', 'Esputo', 'Dolor\_Toracico', \\'Dificultad\_Respiratoria', 'Saturacion\_Baja', 'Cianosis']}
+    \item \textbf{Diagnóstico Objetivo ($\alpha$):} \texttt{Alerta\_Falla\_Respiratoria}
+    \item \textbf{Encadenamiento hacia Adelante:} Consecuencia lógica verificada con éxito (\texttt{True}).
+    \begin{enumerate}
+        \item \textit{Paso 1 (Regla R01):} \texttt{Fiebre} + \texttt{Tos} $\rightarrow$ \texttt{Signo\_Infeccion\_Respiratoria}
+        \item \textit{Paso 2 (Regla R04):} \texttt{Dificultad\_Respiratoria} + \texttt{Saturacion\_Baja} $\rightarrow$ \texttt{Signo\_Hipoxemia}
+        \item \textit{Paso 3 (Regla R07):} \texttt{Esputo} + \texttt{Tos} $\rightarrow$ \texttt{Signo\_Secrecion\_Bronquial}
+        \item \textit{Paso 4 (Regla R09):} \texttt{Signo\_Infeccion\_Respiratoria} + \texttt{Signo\_Secrecion\_Bronquial} $\rightarrow$ \texttt{Sindrome\_Respiratorio\_Bajo}
+        \item \textit{Paso 5 (Regla R16):} \texttt{Dolor\_Toracico} + \texttt{Sindrome\_Respiratorio\_Bajo} $\rightarrow$ \texttt{Neumonia}
+        \item \textit{Paso 6 (Regla R19):} \texttt{Neumonia} + \texttt{Signo\_Hipoxemia} $\rightarrow$ \texttt{Neumonia\_Grave}
+        \item \textit{Paso 7 (Regla R22):} \texttt{Cianosis} + \texttt{Neumonia\_Grave} $\rightarrow$ \textbf{\texttt{Alerta\_Falla\_Respiratoria}}
+    \end{enumerate}
+    \item \textbf{Encadenamiento hacia Atrás:} Demostrable con éxito (\texttt{True}). Reglas utilizadas: \texttt{R07, R01, R09, R16, R04, R19, R22}.
 \end{itemize}
 
 \section{Conclusiones}
+\begin{itemize}
+    \item Se logró implementar con éxito un motor de inferencia simbólica de propósito general basado en cláusulas de Horn, capaz de gestionar eficientemente más de 50 reglas lógicas estructuradas en un dominio médico complejo.
+    \item La integración de las estrategias de encadenamiento hacia adelante y hacia atrás permitió verificar la consecuencia lógica $KB \models \alpha$ tanto desde una perspectiva guiada por los datos como por los objetivos, garantizando robustez mediante algoritmos de punto fijo y control de recursividad.
+    \item A través de la validación experimental de los cuatro casos clínicos, se demostró una profundidad lógica de hasta cinco niveles de abstracción, superando los requerimientos mínimos del proyecto y evidenciando una trazabilidad clara y auditable en la derivación de diagnósticos críticos.
+    \item La automatización de pruebas mediante unidades de software y la capacidad de exportar las trazas de explicación en formatos estructurados aseguran la escalabilidad, mantenibilidad y confiabilidad del sistema experto desarrollado.
+\end{itemize}
 
 \end{document}
