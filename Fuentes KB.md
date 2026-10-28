@@ -1,5 +1,5 @@
 ## Fuentes KB
-Decia que se podia construir con IA asi q sencillito pa JAJAJAJJAJAJA, igual tambien decia que habia que revisarlo, entonces está revisada y con las fuentes que se usaron para la creacion de la misma
+La base de conocimiento (KB) se construyó con apoyo de herramientas de inteligencia artificial, de acuerdo con las instrucciones del proyecto. Posteriormente, se revisó su contenido y se documentaron las fuentes utilizadas como referencia para su elaboración, con el fin de respaldar las reglas y asociaciones incorporadas.
 
 - OMS, guías de manejo clínico de arbovirosis (2025): WHO guidelines for clinical management of arboviral diseases: dengue, chikungunya, Zika and yellow fever. Geneva: WHO, 2025, ISBN 978-92-4-011111-0. Respaldan las ramas de dengue, chikungunya y Zika, la dificultad de diferenciarlas clínicamente y la regla de evitar AINEs.
 
