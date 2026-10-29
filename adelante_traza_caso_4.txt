@@ -1,0 +1,7 @@
+Paso 1: R01: Fiebre AND Tos -> Signo_Infeccion_Respiratoria
+Paso 2: R04: Dificultad_Respiratoria AND Saturacion_Baja -> Signo_Hipoxemia
+Paso 3: R07: Esputo AND Tos -> Signo_Secrecion_Bronquial
+Paso 4: R09: Signo_Secrecion_Bronquial AND Signo_Infeccion_Respiratoria -> Sindrome_Respiratorio_Bajo
+Paso 5: R16: Sindrome_Respiratorio_Bajo AND Dolor_Toracico -> Neumonia
+Paso 6: R19: Neumonia AND Signo_Hipoxemia -> Neumonia_Grave
+Paso 7: R22: Neumonia_Grave AND Cianosis -> Alerta_Falla_Respiratoria

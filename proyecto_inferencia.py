@@ -16,6 +16,7 @@ class MotorInferencia:
     def __init__(self, ruta_kb):
         self.reglas = self.cargar_kb(ruta_kb)
         self.memoria_trabajo = set()
+        self.traza_explicacion = []
 
     def cargar_kb(self, ruta):
         """Carga las reglas desde un archivo JSON."""
@@ -35,9 +36,12 @@ class MotorInferencia:
         Motor de Encadenamiento hacia Adelante (Forward Chaining).
         """
         self.memoria_trabajo = set(hechos_iniciales)
-        traza_explicacion = []  
+        self.traza_explicacion = []  
 
         if objetivo in self.memoria_trabajo:
+            self.traza_explicacion.append(f"El objetivo '{objetivo}' ya se encuentra en los hechos iniciales.")
+            print("Es concecuencia logica!!")
+            print(self.traza_explicacion[0])
             return True
 
         hubo_cambios = True
@@ -47,15 +51,23 @@ class MotorInferencia:
                 if (regla.consecuente not in self.memoria_trabajo
                         and regla.antecedentes <= self.memoria_trabajo):
                     self.memoria_trabajo.add(regla.consecuente)
-                    traza_explicacion.append(regla)
+                    self.traza_explicacion.append(f"Paso {len(self.traza_explicacion) + 1}: {regla}")
                     hubo_cambios = True
                     if objetivo in self.memoria_trabajo:
                         print("Es concecuencia logica!!")
                         print("Reglas utilizadas: ")
-                        print(*[r.id_regla for r in traza_explicacion], sep=', ')
+                        print(*self.traza_explicacion, sep='\n')
                         return True
         print("No es concecuencia logica...")
+        if self.traza_explicacion:
+            print("Hechos derivados antes de fallar:")
+            print(*self.traza_explicacion, sep='\n')
         return False
+
+    def exportar_traza(self, ruta="traza_explicacion.txt"):
+        """Exporta la traza de explicación a un archivo de texto."""
+        with open(ruta, 'w', encoding='utf-8') as f:
+            f.write('\n'.join(self.traza_explicacion) + '\n')
 
     def ejecutar_inferencia_atras(self, hechos_iniciales, objetivo):
         """
@@ -63,27 +75,33 @@ class MotorInferencia:
         """
         memoria = set(hechos_iniciales)
         if objetivo in memoria:
+            print("Puede ser demostrado!!")
+            print(f"El objetivo '{objetivo}' ya se encuentra en los hechos iniciales.")
             return True
         
         historial = []
-        res = self.rec_inferencia_atras(memoria, objetivo, historial)
+        visitados = set()
+        res = self.rec_inferencia_atras(memoria, objetivo, historial, visitados, 0)
         if res:
             print("Puede ser demostrado!!")
-            print("Reglas utilizadas: ", end="")
-            print(*[r.id_regla for r in historial], sep=', ')
+            print("Reglas utilizadas: ")
+            print(*[f"Paso {i}: {r}" for i, r in enumerate(historial, 1)], sep='\n')
         else:
             print("No puede ser demostrado")
         return res
 
-    def rec_inferencia_atras(self, memoria, obj, historial):
+    def rec_inferencia_atras(self, memoria, obj, historial, visitados, prof):
         if obj in memoria:
             return True
+        if obj in visitados or prof > 10:
+            return False
 
+        visitados.add(obj)
         reglas_utiles = [i for i in self.reglas if i.consecuente == obj]
         for r in reglas_utiles:
             resultado = True
             for a in r.antecedentes:
-                if self.rec_inferencia_atras(memoria, a, historial):
+                if self.rec_inferencia_atras(memoria, a, historial, visitados, prof + 1):
                     memoria.add(a) 
                 else:
                     resultado = False
@@ -91,6 +109,7 @@ class MotorInferencia:
             if resultado:
                 historial.append(r) 
                 return True
+        visitados.remove(obj)
         return False
 
 if __name__ == "__main__":
@@ -138,8 +157,11 @@ if __name__ == "__main__":
         print("--- Motor Hacia Adelante ---")
         resultado_adelante = motor.ejecutar_inferencia(caso['sintomas'], caso['objetivo'])
         print(f"¿Es consecuencia lógica?: {resultado_adelante}")
+        motor.exportar_traza(f"adelante_traza_caso_{i}.txt")
         
         # Motor hacia atrás
         print("\n--- Motor Hacia Atrás ---")
         resultado_atras = motor.ejecutar_inferencia_atras(caso['sintomas'], caso['objetivo'])
         print(f"¿Es demostrable?: {resultado_atras}")
+        motor.exportar_traza(f"atras_traza_caso_{i}.txt")
+

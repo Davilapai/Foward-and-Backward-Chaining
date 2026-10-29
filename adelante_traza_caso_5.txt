@@ -1,0 +1,2 @@
+Paso 1: R01: Fiebre AND Tos -> Signo_Infeccion_Respiratoria
+Paso 2: R04: Dificultad_Respiratoria AND Saturacion_Baja -> Signo_Hipoxemia
