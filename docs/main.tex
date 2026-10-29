@@ -87,7 +87,7 @@ Julio Omar Palacio Nino\\[2cm]
 % --- A PARTIR DE AQUÍ EMPIEZA LA PÁGINA 2 ---
 \justifying
 \begin{abstract}
-Este documento presenta el diseño, modelado e implementación de un motor de inferencia simbólica basado en lógica proposicional y cláusulas de Horn para un dominio médico complejo. Se detallan las estrategias algorítmicas de encadenamiento hacia adelante (\textit{forward chaining}) y hacia atrás (\textit{backward chaining}), garantizando una profundidad lógica de al menos cuatro niveles. Asimismo, se valida el funcionamiento del sistema mediante tres casos clínicos experimentales, demostrando la trazabilidad paso a paso en la deducción de diagnósticos y estados de alerta.
+Este documento presenta el diseño, modelado e implementación de un motor de inferencia simbólica basado en lógica proposicional y cláusulas de Horn para un dominio médico complejo. Se detallan las estrategias algorítmicas de encadenamiento hacia adelante (\textit{forward chaining}) y hacia atrás (\textit{backward chaining}), garantizando una profundidad lógica de al menos cuatro niveles. Asimismo, se valida el funcionamiento del sistema mediante casos clínicos experimentales, demostrando la trazabilidad paso a paso en la deducción de diagnósticos y estados de alerta.
 \end{abstract}
 
 \vspace{0.5cm}
@@ -108,18 +108,18 @@ Para cumplir con los requerimientos del proyecto, se ha desarrollado una base mo
 El núcleo del sistema experto se compone de dos motores de inferencia simbólica implementados en Python, los cuales operan sobre la base de conocimiento estructurada en cláusulas de Horn.
 
 \subsection{Motor de Inferencia hacia Adelante (Forward Chaining)}
-El encadenamiento hacia adelante es una estrategia de razonamiento guiada por los datos (\textit{data-driven}). 
+El encadenamiento hacia adelante es una estrategia de razonamiento guiada por los datos. 
 \begin{itemize}
     \item \textbf{Funcionamiento:} El algoritmo inicializa la memoria de trabajo con el conjunto de síntomas iniciales ($\Delta$). Utiliza un enfoque de punto fijo iterativo donde recorre de forma secuencial las reglas de la base de conocimiento. Una regla se dispara únicamente si el consecuente aún no se encuentra en la memoria de trabajo y la totalidad de sus antecedentes forman un subconjunto estricto o igual a la memoria actual ($\text{regla.antecedentes} \subseteq \text{memoria\_trabajo}$).
     \item \textbf{Condición de Parada:} El proceso de inferencia termina bajo dos criterios de salida: (a) cuando el diagnóstico objetivo ($\alpha$) es alcanzado e incorporado a la memoria de trabajo (retornando exitosamente \texttt{True}), o (b) cuando se alcanza un punto fijo iterativo donde una pasada completa por la base de conocimiento no genera nuevos hechos (retornando \texttt{False}).
-    \item \textbf{Trazabilidad:} Cada vez que una regla se dispara, el sistema registra cronológicamente en una lista de diccionarios el número de paso, el identificador de la regla, los antecedentes evaluados y el consecuente derivado, permitiendo exportar posteriormente una traza detallada de la auditoría clínica.
+    \item \textbf{Trazabilidad:} Cada vez que una regla se dispara, el sistema registra cronológicamente en una lista el número de paso, el identificador de la regla, los antecedentes evaluados y el consecuente derivado (mostrando los hechos alcanzados incluso si el objetivo falla), permitiendo exportar posteriormente una traza detallada de la auditoría clínica.
 \end{itemize}
 
 \subsection{Motor de Inferencia hacia Atrás (Backward Chaining)}
-El encadenamiento hacia atrás opera bajo un enfoque guiado por los objetivos (\textit{goal-driven}).
+El encadenamiento hacia atrás opera bajo un enfoque guiado por los objetivos.
 \begin{itemize}
     \item \textbf{Funcionamiento:} El algoritmo parte directamente de la hipótesis o diagnóstico objetivo ($\alpha$) y evalúa recursivamente si puede ser demostrado a partir de los hechos iniciales. Para ello, identifica el conjunto de reglas útiles cuyos consecuentes coinciden con el objetivo actual y descompone la meta probando de manera recursiva cada uno de sus antecedentes como sub-objetivos independientes.
-    \item \textbf{Casos Base y Control de Profundidad:} Como mecanismo de control robusto, el algoritmo evalúa un caso base inicial verificando si el objetivo ya pertenece al conjunto de hechos de la memoria. Si la validación recursiva de los antecedentes es exitosa, la regla evaluada se almacena en un historial cronológico de trazabilidad, permitiendo confirmar la demostrabilidad lógica de la hipótesis médica planteada.
+    \item \textbf{Casos Base y Control de Profundidad:} Como mecanismo de control robusto, el algoritmo evalúa un caso base inicial verificando si el objetivo ya pertenece al conjunto de hechos de la memoria, además de emplear un conjunto de nodos \texttt{visitados} para evitar ciclos y un contador de profundidad máxima (\texttt{prof > 10}) como casos base de parada. Si la validación recursiva de los antecedentes es exitosa, la regla completa se almacena en un historial cronológico de trazabilidad, permitiendo confirmar la demostrabilidad lógica de la hipótesis médica planteada.
 \end{itemize}
 
 \section{Casos Clínicos y Validación del Sistema Experto}
