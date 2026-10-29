@@ -95,7 +95,7 @@ Este documento presenta el diseño, modelado e implementación de un motor de in
 \section{Introducción y Definición del Problema}
 El estudio de la inteligencia artificial clásica requiere la construcción de sistemas expertos capaces de resolver el problema de la consecuencia lógica $KB \models \alpha$, donde $KB$ representa la Base de Conocimiento estructurada en reglas de Horn de la forma $(P_1 \wedge P_2 \wedge \dots \wedge P_n \rightarrow Q)$, $\Delta$ denota el conjunto inicial de síntomas observados (hechos), y $\alpha$ es el diagnóstico u objetivo a verificar. 
 
-Para cumplir con los requerimientos del proyecto, se ha desarrollado una base modular externa en formato JSON que contiene más de 50 reglas lógicas, estructuradas de lo general a lo particular a través de cuatro niveles de abstracción:
+Para cumplir con los requerimientos del proyecto, se ha desarrollado una base modular externa en formato JSON que contiene más de 50 reglas lógicas, estructuradas de lo general a lo particular a través de cinco niveles de abstracción:
 \begin{enumerate}
     \item \textbf{Nivel 1:} Hechos hacia Signos.
     \item \textbf{Nivel 2:} Signos hacia Síndromes.
@@ -103,11 +103,14 @@ Para cumplir con los requerimientos del proyecto, se ha desarrollado una base mo
     \item \textbf{Nivel 4:} Enfermedades y síntomas críticos hacia Subtipos y Tratamientos.
     \item \textbf{Nivel 5:} Estados de Alerta hacia Diagnósticos Críticos y Recomendaciones de Intervención.
 \end{enumerate}
+
+Adicionalmente, la base de conocimiento fue auditada mediante un script de verificacion (\texttt{validador\_kb.py}) para garantizar el cumplimiento estricto de las restricciones lógicas del modelo: \textbf{Restricción de Horn} (un único consecuente positivo y antecedentes no vacíos sin autorreferencias), \textbf{Aciclicidad} (ausencia de ciclos verificada mediante búsqueda en profundidad sobre el grafo de dependencias) y \textbf{Alcanzabilidad} (todas las reglas y diagnósticos finales son derivables desde los síntomas base, sin islas lógicas). Asimismo, se modelaron ramas con alta similitud sintomatológica separadas por \textbf{hechos diferenciadores} clave; por ejemplo, la presencia conjunta de \texttt{Sindrome\_Gripal} y \texttt{Sindrome\_Respiratorio\_Alto} se bifurca hacia \texttt{Influenza} ante el hecho diferenciador \texttt{Inicio\_Subito} (\texttt{R12}) o hacia \texttt{COVID19} ante \texttt{Perdida\_Olfato} (\texttt{R13}), del mismo modo que \texttt{Sindrome\_Respiratorio\_Bajo} distingue entre \texttt{Neumonia} (\texttt{Dolor\_Toracico}, \texttt{R16}) y \texttt{Bronquitis\_Aguda} (\texttt{Signo\_Obstruccion\_Bronquial}, \texttt{R17}).
+
 \section{Estrategias Algorítmicas Utilizadas}
 
 El núcleo del sistema experto se compone de dos motores de inferencia simbólica implementados en Python, los cuales operan sobre la base de conocimiento estructurada en cláusulas de Horn.
 
-\subsection{Motor de Inferencia hacia Adelante (Forward Chaining)}
+\subsection{Motor de Inferencia hacia Adelante}
 El encadenamiento hacia adelante es una estrategia de razonamiento guiada por los datos. 
 \begin{itemize}
     \item \textbf{Funcionamiento:} El algoritmo inicializa la memoria de trabajo con el conjunto de síntomas iniciales ($\Delta$). Utiliza un enfoque de punto fijo iterativo donde recorre de forma secuencial las reglas de la base de conocimiento. Una regla se dispara únicamente si el consecuente aún no se encuentra en la memoria de trabajo y la totalidad de sus antecedentes forman un subconjunto estricto o igual a la memoria actual ($\text{regla.antecedentes} \subseteq \text{memoria\_trabajo}$).
@@ -115,16 +118,16 @@ El encadenamiento hacia adelante es una estrategia de razonamiento guiada por lo
     \item \textbf{Trazabilidad:} Cada vez que una regla se dispara, el sistema registra cronológicamente en una lista el número de paso, el identificador de la regla, los antecedentes evaluados y el consecuente derivado (mostrando los hechos alcanzados incluso si el objetivo falla), permitiendo exportar posteriormente una traza detallada de la auditoría clínica.
 \end{itemize}
 
-\subsection{Motor de Inferencia hacia Atrás (Backward Chaining)}
+\subsection{Motor de Inferencia hacia Atrás}
 El encadenamiento hacia atrás opera bajo un enfoque guiado por los objetivos.
 \begin{itemize}
     \item \textbf{Funcionamiento:} El algoritmo parte directamente de la hipótesis o diagnóstico objetivo ($\alpha$) y evalúa recursivamente si puede ser demostrado a partir de los hechos iniciales. Para ello, identifica el conjunto de reglas útiles cuyos consecuentes coinciden con el objetivo actual y descompone la meta probando de manera recursiva cada uno de sus antecedentes como sub-objetivos independientes.
-    \item \textbf{Casos Base y Control de Profundidad:} Como mecanismo de control robusto, el algoritmo evalúa un caso base inicial verificando si el objetivo ya pertenece al conjunto de hechos de la memoria, además de emplear un conjunto de nodos \texttt{visitados} para evitar ciclos y un contador de profundidad máxima (\texttt{prof > 10}) como casos base de parada. Si la validación recursiva de los antecedentes es exitosa, la regla completa se almacena en un historial cronológico de trazabilidad, permitiendo confirmar la demostrabilidad lógica de la hipótesis médica planteada.
+    \item \textbf{Casos Base y Control de Profundidad:} Como mecanismo de control robusto, el algoritmo evalúa un caso base inicial verificando si el objetivo ya pertenece al conjunto de hechos de la memoria, además de emplear un conjunto de nodos \texttt{visitados} para evitar ciclos y un contador de profundidad máxima (\texttt{prof > 10}) como casos base de parada. Si la validación recursiva de todos los antecedentes de una rama es exitosa, su historial temporal se incorpora al historial cronológico de trazabilidad (evitando contaminación por \textit{backtracking} en ramas fallidas), permitiendo confirmar y exportar la demostrabilidad lógica de la hipótesis médica planteada.
 \end{itemize}
 
 \section{Casos Clínicos y Validación del Sistema Experto}
 
-Para validar el correcto funcionamiento de los motores de inferencia (tanto en encadenamiento hacia adelante como hacia atrás), se diseñaron y evaluaron cuatro casos clínicos con diferentes niveles de complejidad y profundidad lógica, superando el mínimo requerido de cuatro niveles de abstracción.
+Para validar el correcto funcionamiento de los motores de inferencia (tanto en encadenamiento hacia adelante como hacia atrás), se diseñaron y evaluaron cinco casos clínicos con diferentes niveles de complejidad y profundidad lógica (incluyendo cuatro casos demostrativos y un quinto caso de fallo por ausencia de un síntoma clave), superando el mínimo requerido de cuatro niveles de abstracción.
 
 \subsection{Caso Clínico 1: Síndrome Respiratorio Alto (Nivel 2)}
 \begin{itemize}
@@ -186,11 +189,24 @@ Para validar el correcto funcionamiento de los motores de inferencia (tanto en e
     \item \textbf{Encadenamiento hacia Atrás:} Demostrable con éxito (\texttt{True}). Reglas utilizadas: \texttt{R07, R01, R09, R16, R04, R19, R22}.
 \end{itemize}
 
+\subsection{Caso Clínico 5: Fallo en detectar Alerta de Falla Respiratoria Extrema (Nivel 5)}
+\begin{itemize}
+    \item \textbf{Síntomas Iniciales ($\Delta$):} \texttt{['Fiebre', 'Tos', 'Dolor\_Toracico', \\'Dificultad\_Respiratoria', 'Saturacion\_Baja', 'Cianosis']} \textit{(ausencia del síntoma \texttt{Esputo})}
+    \item \textbf{Diagnóstico Objetivo ($\alpha$):} \texttt{Alerta\_Falla\_Respiratoria}
+    \item \textbf{Encadenamiento hacia Adelante:} No es consecuencia lógica (\texttt{False}). El motor alcanza un punto fijo iterativo y se detiene tras derivar únicamente los siguientes hechos intermedios:
+    \begin{enumerate}
+        \item \textit{Paso 1 (Regla R01):} \texttt{Fiebre} + \texttt{Tos} $\rightarrow$ \texttt{Signo\_Infeccion\_Respiratoria}
+        \item \textit{Paso 2 (Regla R04):} \texttt{Dificultad\_Respiratoria} + \texttt{Saturacion\_Baja} $\rightarrow$ \texttt{Signo\_Hipoxemia}
+    \end{enumerate}
+    Ante la falta de \texttt{Esputo}, la regla \texttt{R07} (\texttt{Signo\_Secrecion\_Bronquial}) no puede dispararse, interrumpiendo la cadena deductiva hacia \texttt{Sindrome\_Respiratorio\_Bajo}, \texttt{Neumonia}, \texttt{Neumonia\_Grave} y \texttt{Alerta\_Falla\_Respiratoria}.
+    \item \textbf{Encadenamiento hacia Atrás:} No puede ser demostrado (\texttt{False}). El motor descarta las ramas fallidas mediante \textit{backtracking} sin contaminar la traza de explicación, confirmando la imposibilidad de demostrar $\alpha$ a partir de $\Delta$.
+\end{itemize}
+
 \section{Conclusiones}
 \begin{itemize}
     \item Se logró implementar con éxito un motor de inferencia simbólica de propósito general basado en cláusulas de Horn, capaz de gestionar eficientemente más de 50 reglas lógicas estructuradas en un dominio médico complejo.
     \item La integración de las estrategias de encadenamiento hacia adelante y hacia atrás permitió verificar la consecuencia lógica $KB \models \alpha$ tanto desde una perspectiva guiada por los datos como por los objetivos, garantizando robustez mediante algoritmos de punto fijo y control de recursividad.
-    \item A través de la validación experimental de los cuatro casos clínicos, se demostró una profundidad lógica de hasta cinco niveles de abstracción, superando los requerimientos mínimos del proyecto y evidenciando una trazabilidad clara y auditable en la derivación de diagnósticos críticos.
+    \item A través de la validación experimental de los cinco casos clínicos (incluyendo escenarios de éxito y de parada por punto fijo ante información incompleta), se demostró una profundidad lógica de hasta cinco niveles de abstracción, superando los requerimientos mínimos del proyecto y evidenciando una trazabilidad clara y auditable en la derivación de diagnósticos críticos.
     \item La automatización de pruebas mediante unidades de software y la capacidad de exportar las trazas de explicación en formatos estructurados aseguran la escalabilidad, mantenibilidad y confiabilidad del sistema experto desarrollado.
 \end{itemize}
 

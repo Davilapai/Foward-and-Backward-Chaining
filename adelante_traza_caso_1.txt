@@ -1,3 +1,0 @@
-Paso 1: R01: Fiebre AND Tos -> Signo_Infeccion_Respiratoria
-Paso 2: R02: Dolor_Garganta AND Congestion_Nasal -> Signo_Compromiso_Via_Aerea_Alta
-Paso 3: R08: Signo_Compromiso_Via_Aerea_Alta AND Signo_Infeccion_Respiratoria -> Sindrome_Respiratorio_Alto

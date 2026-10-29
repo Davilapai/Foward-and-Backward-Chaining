@@ -33,14 +33,14 @@ class MotorInferencia:
     # ==========================================================
     def ejecutar_inferencia(self, hechos_iniciales, objetivo):
         """
-        Motor de Encadenamiento hacia Adelante (Forward Chaining).
+        Motor de Encadenamiento hacia Adelante
         """
         self.memoria_trabajo = set(hechos_iniciales)
         self.traza_explicacion = []  
 
         if objetivo in self.memoria_trabajo:
             self.traza_explicacion.append(f"El objetivo '{objetivo}' ya se encuentra en los hechos iniciales.")
-            print("Es concecuencia logica!!")
+            print("Es consecuencia logica!!")
             print(self.traza_explicacion[0])
             return True
 
@@ -54,11 +54,11 @@ class MotorInferencia:
                     self.traza_explicacion.append(f"Paso {len(self.traza_explicacion) + 1}: {regla}")
                     hubo_cambios = True
                     if objetivo in self.memoria_trabajo:
-                        print("Es concecuencia logica!!")
+                        print("Es consecuencia logica!!")
                         print("Reglas utilizadas: ")
                         print(*self.traza_explicacion, sep='\n')
                         return True
-        print("No es concecuencia logica...")
+        print("No es consecuencia logica...")
         if self.traza_explicacion:
             print("Hechos derivados antes de fallar:")
             print(*self.traza_explicacion, sep='\n')
@@ -74,18 +74,21 @@ class MotorInferencia:
         Motor de Encadenamiento hacia Atrás (Backward Chaining).
         """
         memoria = set(hechos_iniciales)
+        self.traza_explicacion = []
         if objetivo in memoria:
+            self.traza_explicacion.append(f"El objetivo '{objetivo}' ya se encuentra en los hechos iniciales.")
             print("Puede ser demostrado!!")
-            print(f"El objetivo '{objetivo}' ya se encuentra en los hechos iniciales.")
+            print(self.traza_explicacion[0])
             return True
         
         historial = []
         visitados = set()
         res = self.rec_inferencia_atras(memoria, objetivo, historial, visitados, 0)
         if res:
+            self.traza_explicacion = [f"Paso {i}: {r}" for i, r in enumerate(historial, 1)]
             print("Puede ser demostrado!!")
             print("Reglas utilizadas: ")
-            print(*[f"Paso {i}: {r}" for i, r in enumerate(historial, 1)], sep='\n')
+            print(*self.traza_explicacion, sep='\n')
         else:
             print("No puede ser demostrado")
         return res
@@ -100,13 +103,17 @@ class MotorInferencia:
         reglas_utiles = [i for i in self.reglas if i.consecuente == obj]
         for r in reglas_utiles:
             resultado = True
+            historial_rama = []
+            memoria_rama = memoria.copy()
             for a in r.antecedentes:
-                if self.rec_inferencia_atras(memoria, a, historial, visitados, prof + 1):
-                    memoria.add(a) 
+                if self.rec_inferencia_atras(memoria_rama, a, historial_rama, visitados, prof + 1):
+                    memoria_rama.add(a) 
                 else:
                     resultado = False
                     break
             if resultado:
+                memoria.update(memoria_rama)
+                historial.extend(historial_rama)
                 historial.append(r) 
                 return True
         visitados.remove(obj)
@@ -164,4 +171,3 @@ if __name__ == "__main__":
         resultado_atras = motor.ejecutar_inferencia_atras(caso['sintomas'], caso['objetivo'])
         print(f"¿Es demostrable?: {resultado_atras}")
         motor.exportar_traza(f"atras_traza_caso_{i}.txt")
-
